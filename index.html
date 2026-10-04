@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAT-01 : समानता (Analogy) — सराव चाचणी</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Marathi:ital@0;1&family=Poppins:wght@400;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-grad: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tiro Devanagari Marathi', 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-grad);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #c026d3);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .app-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .app-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .badge-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            height: 8px;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #06b6d4, #10b981);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Quiz View */
+        .quiz-body {
+            padding: 30px 25px;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .question-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #cbd5e1;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f0fdf4;
+            transform: translateY(-2px);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: #e0e7ff;
+            color: var(--primary-dark);
+        }
+
+        .option-btn.correct {
+            border-color: var(--success) !important;
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--danger) !important;
+            background: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+
+        .opt-prefix {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .option-btn.selected .opt-prefix {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option-btn.correct .opt-prefix {
+            background: var(--success);
+            color: white;
+        }
+
+        .option-btn.incorrect .opt-prefix {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Action Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-hint {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .btn-hint:hover {
+            background: #fde68a;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Hint & Explanation Boxes */
+        .hint-box, .explanation-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .hint-box {
+            background: #fffbeb;
+            border-left: 4px solid var(--accent);
+            color: #78350f;
+        }
+
+        .explanation-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--success);
+            color: #166534;
+        }
+
+        .explanation-box.wrong-bg {
+            background: #fef2f2;
+            border-left-color: var(--danger);
+            color: #991b1b;
+        }
+
+        /* Name Modal / Screen */
+        .start-screen {
+            padding: 40px 25px;
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            font-size: 22px;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin: 25px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .input-group input {
+            width: 100%;
+            max-width: 400px;
+            padding: 14px 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: center;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Result View */
+        .result-screen {
+            padding: 30px 25px;
+            display: none;
+        }
+
+        .score-summary {
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .score-num {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-total {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        /* Skill Analytics Table */
+        .analytics-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .analytics-box h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        .review-list {
+            margin-top: 25px;
+        }
+
+        .review-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .review-item.is-correct {
+            border-left: 5px solid var(--success);
+        }
+
+        .review-item.is-wrong {
+            border-left: 5px solid var(--danger);
+        }
+
+        /* Certificate Styling */
+        .certificate-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .certificate-content {
+            background: #fff;
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 40px;
+            border-radius: 12px;
+            border: 12px solid #4f46e5;
+            outline: 4px solid #f59e0b;
+            position: relative;
+            background-image: radial-gradient(#e0e7ff 1px, transparent 1px);
+            background-size: 20px 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .cert-header {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e1b4b;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .cert-sub {
+            font-size: 16px;
+            color: #475569;
+            margin-bottom: 25px;
+        }
+
+        .cert-name {
+            font-size: 32px;
+            font-weight: 800;
+            color: #4f46e5;
+            border-bottom: 2px solid #4f46e5;
+            display: inline-block;
+            padding: 0 20px 5px;
+            margin: 15px 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cert-body {
+            font-size: 16px;
+            color: #334155;
+            line-height: 1.8;
+            margin: 20px 0;
+        }
+
+        .cert-badge {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 20px auto;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+            border: 3px dashed white;
+        }
+
+        .cert-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.6;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .cert-footer strong {
+            color: #1e1b4b;
+        }
+
+        .cert-btn-bar {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            .certificate-content, .certificate-content * { visibility: visible; }
+            .certificate-content { position: absolute; left: 0; top: 0; width: 100%; border: 6px solid #4f46e5; }
+            .cert-btn-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+        <h1>📝 MAT-01 : समानता (Analogy)</h1>
+        <p>JNVST प्रवेश परीक्षा सराव मालिका — 2025/26</p>
+        <div class="badge-bar">
+            <span class="badge">प्रश्न: 20</span>
+            <span class="badge">स्तर: Easy + Moderate + Challenge</span>
+            <span class="badge">नकारात्मक गुण: नाही</span>
+        </div>
+    </header>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+        <h2>सराव चाचणीमध्ये आपले स्वागत आहे!</h2>
+        <p style="color: #64748b; font-size: 15px;">आपले नाव नोंदवून चाचणी सुरू करा.</p>
+        <div class="input-group">
+            <label for="studentName">विद्यार्थ्याचे पूर्ण नाव:</label>
+            <input type="text" id="studentName" placeholder="उदा. आदित्य शर्मा" required>
+        </div>
+        <button class="btn btn-primary" style="padding: 14px 32px; font-size: 17px;" onclick="startQuiz()">🚀 चाचणी सुरू करा</button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quizScreen" class="quiz-body" style="display: none;">
+        <div class="quiz-meta">
+            <span>प्रश्न <span id="currentQNum">1</span> / 20</span>
+            <span id="categoryTag" style="background: #e0e7ff; color: #3730a3; padding: 3px 10px; border-radius: 12px; font-size: 13px;">प्राणी - निवासस्थान</span>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text" id="questionText">पक्षी : घरटे :: सिंह : ?</div>
+        </div>
+
+        <div class="options-grid" id="optionsGrid">
+            <!-- Dynamic Options -->
+        </div>
+
+        <div id="hintContainer" style="display: none;"></div>
+        <div id="explanationContainer" style="display: none;"></div>
+
+        <div class="controls">
+            <button class="btn btn-hint" id="hintBtn" onclick="toggleHint()">💡 Hint Available</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>पुढील प्रश्न ➔</button>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="resultScreen" class="result-screen">
+        <div class="score-summary">
+            <h2 style="color: #1e1b4b; margin-bottom: 15px;">अभिनंदन! चाचणी पूर्ण झाली. 🎉</h2>
+            <div class="score-circle">
+                <span class="score-num" id="finalScore">16</span>
+                <span class="score-total">out of 20</span>
+            </div>
+            <p id="accuracyText" style="font-size: 18px; font-weight: 700; color: #10b981;">अचूकता: 80%</p>
+        </div>
+
+        <div class="analytics-box">
+            <h3>📊 कौशल्य विश्लेषण अहवाल (Skill Analysis)</h3>
+            <div id="skillReport"></div>
+        </div>
+
+        <div class="result-actions">
+            <button class="btn btn-primary" onclick="showCertificate()">📜 गुणपत्रक व प्रमाणपत्र पहा</button>
+            <button class="btn" style="background: #e2e8f0; color: #334155;" onclick="restartQuiz()">🔁 पुन्हा सराव करा</button>
+        </div>
+
+        <div class="review-list">
+            <h3 style="margin-bottom: 15px; color: #1e293b;">🔎 उत्तर पडताळणी व सविस्तर स्पष्टीकरण:</h3>
+            <div id="reviewContainer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Certificate Modal -->
+<div id="certModal" class="certificate-modal">
+    <div class="cert-btn-bar">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ प्रमाणपत्र प्रिंट / PDF सेव्ह करा</button>
+        <button class="btn" style="background: #ef4444; color: white;" onclick="closeCertificate()">बंद करा</button>
+    </div>
+    <div class="certificate-content" id="certContent">
+        <div class="cert-header">गुणवत्ता प्रमाणपत्र</div>
+        <div class="cert-sub">JNVST MAT-01 : समानता (Analogy) ऑनलाइन सराव चाचणी</div>
+        
+        <p style="font-size: 15px; color: #64748b;">प्रमाणित करण्यात येते की,</p>
+        <div class="cert-name" id="certStudentName">विद्यार्थ्याचे नाव</div>
+        
+        <div class="cert-body">
+            यांनी जवाहर नवोदय विद्यालय प्रवेश परीक्षेच्या तयारीसाठी आयोजित <strong>MAT-01 : समानता</strong> या सराव चाचणीत उत्कृष्ट कामगिरी करून <strong id="certScoreDisplay">16/20</strong> गुण (अचूकता: <strong id="certAccuracyDisplay">80%</strong>) प्राप्त केले आहेत.
+        </div>
+
+        <div class="cert-badge">
+            उत्कृष्ट<br>कामगिरी
+        </div>
+
+        <div class="cert-footer">
+            <strong>सौजन्य:</strong> श्री. प्रवीण वसंतराव जाधव, जि प केंद्रीय प्राथमिक शाळा तालखेड<br>
+            📞 <strong>संपर्क:</strong> 9527672044 | 💡 <strong>अचूकता पडताळणी:</strong> QA Verified
+        </div>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "पक्षी : घरटे :: सिंह : ?",
+        options: ["पाणी", "झाड", "गुहा", "आकाश"],
+        ans: 2,
+        cat: "प्राणी–निवासस्थान",
+        hint: "सिंह कुठे राहतो?",
+        exp: "पक्ष्याचे निवासस्थान घरटे आहे. त्याच प्रकारे सिंहाचे निवासस्थान गुहा आहे."
+    },
+    {
+        q: "डोळे : पाहणे :: कान : ?",
+        options: ["ऐकणे", "बोलणे", "चालणे", "धावणे"],
+        ans: 0,
+        cat: "अवयव–कार्य",
+        hint: "कानाचे मुख्य कार्य काय आहे?",
+        exp: "डोळ्यांचा उपयोग पाहण्यासाठी होतो, तर कानाचा उपयोग ऐकण्यासाठी होतो."
+    },
+    {
+        q: "पेन : लिहिणे :: सुरी : ?",
+        options: ["वाचणे", "पिणे", "धावणे", "कापणे"],
+        ans: 3,
+        cat: "वस्तू–उपयोग",
+        hint: "सुरीचा वापर कशासाठी केला जातो?",
+        exp: "पेन लिहिण्यासाठी वापरतात, तर सुरी वस्तू कापण्यासाठी वापरतात."
+    },
+    {
+        q: "गाय : वासरू :: कुत्रा : ?",
+        options: ["शावक", "पिल्लू", "पाडस", "कोकरू"],
+        ans: 1,
+        cat: "प्राणी–पिल्लू",
+        hint: "कुत्र्याच्या लहान पिल्लाला काय म्हणतात?",
+        exp: "गाईच्या पिल्लाला वासरू म्हणतात, तसेच कुत्र्याच्या पिल्लाला पिल्लू (Puppy) म्हणतात."
+    },
+    {
+        q: "घड्याळ : वेळ :: थर्मामीटर : ?",
+        options: ["वजन", "अंतर", "उंची", "तापमान"],
+        ans: 3,
+        cat: "उपकरण–मापन",
+        hint: "ताप आला की डॉक्टर काय मोजतात?",
+        exp: "घड्याळ वेळ मोजते, तर थर्मामीटर शरीराचे किंवा वातावरणाचे तापमान मोजते."
+    },
+    {
+        q: "शिक्षक : विद्यार्थी :: डॉक्टर : ?",
+        options: ["रुग्ण", "औषध", "शाळा", "पुस्तक"],
+        ans: 0,
+        cat: "व्यक्ती–सेवा ग्राहक",
+        hint: "डॉक्टर कोणावर उपचार करतात?",
+        exp: "शिक्षक विद्यार्थ्यांना शिकवतात, तर डॉक्टर रुग्णावर उपचार करतात."
+    },
+    {
+        q: "चाकू : कापणे :: झाडू : ?",
+        options: ["मोजणे", "लिहिणे", "साफ करणे", "पिणे"],
+        ans: 2,
+        cat: "वस्तू–उपयोग",
+        hint: "कचरा काढण्यासाठी झाडूचा काय उपयोग होतो?",
+        exp: "चाकूचा उपयोग कापण्यासाठी होतो, तर झाडूचा उपयोग परिसर साफ करण्यासाठी होतो."
+    },
+    {
+        q: "पाणी : तहान :: अन्न : ?",
+        options: ["झोप", "भूक", "थंडी", "प्रकाश"],
+        ans: 1,
+        cat: "कारण–परिणाम/गरज",
+        hint: "तहान लागल्यावर पाणी पितात, मग काय लागल्यावर अन्न खातात?",
+        exp: "तहान भागवण्यासाठी पाणी लागते, तर भूक भागवण्यासाठी अन्न लागते."
+    },
+    {
+        q: "पेन : लेखक :: ब्रश : ?",
+        options: ["चित्रकार", "डॉक्टर", "शेतकरी", "चालक"],
+        ans: 0,
+        cat: "साधन–व्यक्ती",
+        hint: "ब्रशचा वापर करून सुंदर चित्रे कोण काढतो?",
+        exp: "लेखकाचे साधन पेन आहे, तर चित्रकाराचे साधन ब्रश आहे."
+    },
+    {
+        q: "हातमोजा : हात :: मोजा : ?",
+        options: ["कान", "डोके", "पाय", "डोळा"],
+        ans: 2,
+        cat: "वस्तू–शरीराचा भाग",
+        hint: "पायात आपण बूट घालण्यापूर्वी काय घालतो?",
+        exp: "हातमोजा हातामध्ये घातला जातो, तर मोजा (Socks) पायात घातला जातो."
+    },
+    {
+        q: "गरम : थंड :: मोठे : ?",
+        options: ["उंच", "लहान", "जड", "रुंद"],
+        ans: 1,
+        cat: "विरुद्धार्थी संबंध",
+        hint: "मोठे या शब्दाचा विरुद्धार्थी शब्द काय?",
+        exp: "गरम च्या विरुद्ध थंड असते, तसेच मोठे च्या विरुद्ध लहान असते."
+    },
+    {
+        q: "मासा : पाणी :: पक्षी : ?",
+        options: ["बिळ", "गोठा", "जंगल", "आकाश"],
+        ans: 3,
+        cat: "प्राणी/जीव–संचार क्षेत्र",
+        hint: "मासा पाण्यात पोहतो, पक्षी कुठे उडतात?",
+        exp: "मासा पाण्यात राहतो/संचार करतो, तर पक्षी आकाशात उडतात/संचार करतात."
+    },
+    {
+        q: "बीज : झाड :: अंडे : ?",
+        options: ["घरटे", "पाणी", "पक्षी", "पिसे"],
+        ans: 2,
+        cat: "उगम–पूर्ण रूप",
+        hint: "बीजापासून झाड बनते, अंड्यातून काय बाहेर येते?",
+        exp: "बीजापासून झाड तयार होते, तसेच अंड्यातून पक्षी बाहेर येतो."
+    },
+    {
+        q: "शेतकरी : शेती :: शिक्षक : ?",
+        options: ["व्यापार", "उपचार", "वाहन", "अध्यापन"],
+        ans: 3,
+        cat: "व्यक्ती–कार्य",
+        hint: "शिक्षक शाळेत काय करतात?",
+        exp: "शेतकऱ्याचे कार्य शेती करणे आहे, तर शिक्षकाचे कार्य अध्यापन (शिकवणे) करणे आहे."
+    },
+    {
+        q: "दिवस : सूर्य :: रात्र : ?",
+        options: ["चंद्र", "वारा", "नदी", "झाड"],
+        ans: 0,
+        cat: "वेळ–प्रकाश स्रोत",
+        hint: "रात्री आकाशात कोणता प्रकाश देणारा गोल दिसतो?",
+        exp: "दिवसा सूर्य प्रकाश देतो, तर रात्री चंद्र प्रकाश देतो."
+    },
+    {
+        q: "मधमाशी : पोळे :: पक्षी : ?",
+        options: ["गोठा", "तलाव", "बिळ", "घरटे"],
+        ans: 3,
+        cat: "प्राणी–निवासस्थान",
+        hint: "पक्षी राहण्यासाठी काय बांधतात?",
+        exp: "मधमाशीचे राहण्याचे ठिकाण पोळे आहे, तर पक्ष्याचे राहण्याचे ठिकाण घरटे आहे."
+    },
+    {
+        q: "पाऊस : छत्री :: ऊन : ?",
+        options: ["रेनकोट", "बूट", "सावली", "पाणी"],
+        ans: 2,
+        cat: "परिस्थिती–संरक्षण/उपाय",
+        hint: "उन्हापासून बचाव करण्यासाठी आपण कशाचा आश्रय घेतो?",
+        exp: "पावसापासून वाचण्यासाठी छत्री वापरतात, तर उन्हापासून वाचण्यासाठी सावली वापरतात."
+    },
+    {
+        q: "किल्ली : कुलूप :: पासवर्ड : ?",
+        options: ["खाते", "पुस्तक", "घड्याळ", "पेन"],
+        ans: 0,
+        cat: "सुरक्षा साधन–लक्ष्य",
+        hint: "आपले डिजिटल खाते उघडण्यासाठी काय लागते?",
+        exp: "कुलूप उघडण्यासाठी किल्ली लागते, तसेच डिजिटल खाते (Account) उघडण्यासाठी पासवर्ड लागतो."
+    },
+    {
+        q: "पाय : चालणे :: पंख : ?",
+        options: ["पोहणे", "उडणे", "ऐकणे", "लिखिणे"],
+        ans: 1,
+        cat: "अवयव–कार्य",
+        hint: "पक्षी पंखांचा वापर कशासाठी करतात?",
+        exp: "पायांचा उपयोग चालण्यासाठी होतो, तर पंखांचा उपयोग उडण्यासाठी होतो."
+    },
+    {
+        q: "झाड : फळ :: गाय : ?",
+        options: ["अंडे", "लोकर", "दूध", "पाणी"],
+        ans: 2,
+        cat: "स्रोत–उत्पादन",
+        hint: "गाईपासून आपल्याला काय मिळते?",
+        exp: "झाडापासून फळ मिळते, तसेच गाईपासून दूध मिळते."
+    }
+];
+
+let currentIndex = 0;
+let userAnswers = new Array(quizData.length).fill(null);
+let studentName = "";
+
+function startQuiz() {
+    const nameInput = document.getElementById('studentName').value.trim();
+    if (!nameInput) {
+        alert("कृपया आपले पूर्ण नाव टाका!");
+        return;
+    }
+    studentName = nameInput;
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('quizScreen').style.display = 'block';
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const q = quizData[currentIndex];
+    document.getElementById('currentQNum').innerText = currentIndex + 1;
+    document.getElementById('categoryTag').innerText = q.cat;
+    document.getElementById('questionText').innerText = `प्रश्न ${currentIndex + 1}: ${q.q}`;
+    
+    // Progress Bar
+    const progress = ((currentIndex) / quizData.length) * 100;
+    document.getElementById('progressBar').style.width = `${progress}%`;
+
+    // Options Grid
+    const optionsGrid = document.getElementById('optionsGrid');
+    optionsGrid.innerHTML = '';
+    const prefixes = ['A', 'B', 'C', 'D'];
+
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        if (userAnswers[currentIndex] === idx) {
+            btn.classList.add('selected');
+        }
+        btn.onclick = () => selectOption(idx);
+        btn.innerHTML = `<span class="opt-prefix">${prefixes[idx]}</span> <span>${opt}</span>`;
+        optionsGrid.appendChild(btn);
+    });
+
+    // Reset Hint & Explanation
+    document.getElementById('hintContainer').style.display = 'none';
+    document.getElementById('explanationContainer').style.display = 'none';
+    
+    // Enable/Disable Next
+    document.getElementById('nextBtn').disabled = (userAnswers[currentIndex] === null);
+    if(currentIndex === quizData.length - 1) {
+        document.getElementById('nextBtn').innerText = "निकाल पहा 🎯";
+    } else {
+        document.getElementById('nextBtn').innerText = "पुढील प्रश्न ➔";
+    }
+}
+
+function selectOption(idx) {
+    userAnswers[currentIndex] = idx;
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach((btn, i) => {
+        if(i === idx) btn.classList.add('selected');
+        else btn.classList.remove('selected');
+    });
+
+    // Show instant feedback
+    showInstantFeedback(idx);
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function showInstantFeedback(selectedIdx) {
+    const q = quizData[currentIndex];
+    const isCorrect = (selectedIdx === q.ans);
+    const expBox = document.getElementById('explanationContainer');
+    
+    const prefixes = ['A', 'B', 'C', 'D'];
+    
+    expBox.className = isCorrect ? 'explanation-box' : 'explanation-box wrong-bg';
+    expBox.innerHTML = `
+        <strong>${isCorrect ? '🟢 बरोबर! 🎉' : '🔴 चुकीचे उत्तर.'}</strong><br>
+        ${!isCorrect ? `तुमचे उत्तर: <strong>${prefixes[selectedIdx]} — ${q.options[selectedIdx]}</strong><br>` : ''}
+        योग्य उत्तर: <strong>${prefixes[q.ans]} — ${q.options[q.ans]}</strong><br>
+        <span style="font-size: 14px; margin-top: 5px; display: block;">💡 <strong>स्पष्टीकरण:</strong> ${q.exp}</span>
+    `;
+    expBox.style.display = 'block';
+
+    // Highlight Option Buttons
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if(i === q.ans) btn.classList.add('correct');
+        if(i === selectedIdx && !isCorrect) btn.classList.add('incorrect');
+    });
+}
+
+function toggleHint() {
+    const hintBox = document.getElementById('hintContainer');
+    const q = quizData[currentIndex];
+    if (hintBox.style.display === 'none') {
+        hintBox.className = 'hint-box';
+        hintBox.innerHTML = `<strong>💡 Hint:</strong> ${q.hint}`;
+        hintBox.style.display = 'block';
+    } else {
+        hintBox.style.display = 'none';
+    }
+}
+
+function nextQuestion() {
+    if (currentIndex < quizData.length - 1) {
+        currentIndex++;
+        loadQuestion();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    document.getElementById('quizScreen').style.display = 'none';
+    document.getElementById('resultScreen').style.display = 'block';
+    document.getElementById('progressBar').style.width = '100%';
+
+    let score = 0;
+    const catStats = {};
+
+    quizData.forEach((q, idx) => {
+        if (!catStats[q.cat]) {
+            catStats[q.cat] = { total: 0, correct: 0 };
+        }
+        catStats[q.cat].total++;
+
+        if (userAnswers[idx] === q.ans) {
+            score++;
+            catStats[q.cat].correct++;
+        }
+    });
+
+    const accuracy = Math.round((score / quizData.length) * 100);
+    document.getElementById('finalScore').innerText = score;
+    document.getElementById('accuracyText').innerText = `अचूकता: ${accuracy}%`;
+
+    // Skill Report Generator
+    let skillHtml = '<ul style="list-style: none; padding: 0;">';
+    for (const cat in catStats) {
+        const stat = catStats[cat];
+        const isGood = stat.correct === stat.total;
+        const icon = isGood ? '🟢' : (stat.correct > 0 ? '🟡' : '🔴');
+        skillHtml += `
+            <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 15px;">
+                <span>${icon} ${cat}</span>
+                <strong>${stat.correct} / ${stat.total}</strong>
+            </li>
+        `;
+    }
+    skillHtml += '</ul>';
+    document.getElementById('skillReport').innerHTML = skillHtml;
+
+    // Review List Generator
+    const reviewContainer = document.getElementById('reviewContainer');
+    reviewContainer.innerHTML = '';
+    const prefixes = ['A', 'B', 'C', 'D'];
+
+    quizData.forEach((q, idx) => {
+        const uAns = userAnswers[idx];
+        const isCorr = uAns === q.ans;
+        const div = document.createElement('div');
+        div.className = `review-item ${isCorr ? 'is-correct' : 'is-wrong'}`;
+        div.innerHTML = `
+            <div style="font-weight: 700; margin-bottom: 5px;">प्रश्न ${idx + 1}: ${q.q}</div>
+            <div style="font-size: 14px; color: #475569;">
+                तुमचे उत्तर: <span style="color: ${isCorr ? '#10b981' : '#ef4444'}; font-weight: bold;">${uAns !== null ? prefixes[uAns] + ' — ' + q.options[uAns] : 'सोडून दिले'}</span> | 
+                योग्य उत्तर: <span style="color: #10b981; font-weight: bold;">${prefixes[q.ans]} — ${q.options[q.ans]}</span>
+            </div>
+            <div style="font-size: 13px; color: #64748b; margin-top: 4px;">💡 ${q.exp}</div>
+        `;
+        reviewContainer.appendChild(div);
+    });
+
+    // Fire Confetti if high score
+    if(accuracy >= 70) {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    }
+}
+
+function showCertificate() {
+    document.getElementById('certStudentName').innerText = studentName;
+    const score = document.getElementById('finalScore').innerText;
+    const accuracy = Math.round((parseInt(score) / 20) * 100);
+    document.getElementById('certScoreDisplay').innerText = `${score} / 20`;
+    document.getElementById('certAccuracyDisplay').innerText = `${accuracy}%`;
+    document.getElementById('certModal').style.display = 'block';
+}
+
+function closeCertificate() {
+    document.getElementById('certModal').style.display = 'none';
+}
+
+function restartQuiz() {
+    currentIndex = 0;
+    userAnswers = new Array(quizData.length).fill(null);
+    document.getElementById('resultScreen').style.display = 'none';
+    document.getElementById('startScreen').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
